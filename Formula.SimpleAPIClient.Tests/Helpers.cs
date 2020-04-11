@@ -8,7 +8,7 @@ namespace Formula.SimpleAPIClient.Tests
     {
         public static SimpleAPIClientConfigModel GetConfig()
         {
-            var config = SimpleAPIClientConfigLoader.Get("config.json");
+            var config = SimpleAPIClientConfigLoader.Get("../../../config.json");
 
             return config.Instance;
         }
