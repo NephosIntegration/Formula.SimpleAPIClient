@@ -2,7 +2,7 @@ using System;
 
 namespace Formula.SimpleAPIClient
 {
-    public class OAuth2TokenModel : SimpleToken
+    public class OAuth2TokenModel : BaseToken
     {
         public String access_token { get; set; }
         public long expires_in { get; set; }

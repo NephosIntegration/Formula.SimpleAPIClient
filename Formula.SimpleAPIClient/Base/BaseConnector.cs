@@ -8,7 +8,7 @@ using IdentityModel.Client;
 namespace Formula.SimpleAPIClient
 {
     public abstract class BaseConnector<TTokenModel> : IConnector
-    where TTokenModel : SimpleToken
+    where TTokenModel : BaseToken
     {
         protected abstract Task<StatusBuilder> EstablishTokenAsync();
         protected abstract StatusBuilder ParseToken(TokenResponse tokenResponse);

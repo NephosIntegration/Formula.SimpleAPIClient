@@ -1,23 +1,29 @@
 using System;
 using Xunit;
 using Formula.SimpleAPIClient;
+using System.Threading.Tasks;
 
 namespace Formula.SimpleAPIClient.Tests
 {
     public class OAuth2ClientTests
     {
         private OAuth2Client client = null;
+        private SimpleAPIClientConfigModel config = null;
 
         public OAuth2ClientTests()
         {
-            var config = Helpers.GetConfig();
+            this.config = Helpers.GetConfig();
             this.client = new OAuth2Client(config.OAuth2Config);
         }
 
         [Fact]
-        public void Test1()
+        public async Task CanReceiveContentAsync()
         {
-            Assert.True(true);
+            var response = await this.client.GetAsStringAsync(this.config.OAuth2Config.AuthServerAddress + "/Manage");
+            Assert.True(response.IsSuccessful);
+            var pageContent = response.GetDataAs<String>();
+            Assert.NotNull(pageContent);
+            Assert.IsType<String>(pageContent);
         }
     }
 }
