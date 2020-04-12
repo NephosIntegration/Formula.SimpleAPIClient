@@ -1,5 +1,5 @@
 # Formula.SimpleAPIClient
-Easily and and securely consume API's from c#.
+Easily and securely consume API's from c#.
 
 ## Goals
 * Provide an easy way of accessing API's behind various authentication schemes
@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 using Formula.SimpleAPIClient;
 using System.Collections.Generic;
 
-namespace MyApp
+namespace Formula.SimpleAPIClient.Examples.ConsoleApp
 {
     /// <summary>
     /// A basic model we hope to receive from our API
@@ -96,10 +96,6 @@ namespace MyApp
                     // If the API endpoint says it did it's work successfully
                     // So, let's unpack the products
                     productTypes = payloadFromEndpoint.Data;
-                    foreach(var productType in productTypes)
-                    {
-                        Console.WriteLine(productType.ProductType);
-                    }
                 }
                 else
                 {
@@ -110,13 +106,15 @@ namespace MyApp
             else
             {
                 // Why did it fail?
-                Console.WriteLine(resultsOfAPICall.Message);
+                Console.WriteLine($"Failed to access the API! - {resultsOfAPICall.Message}");
+
+                Console.WriteLine("");
+                Console.WriteLine("Details:");
 
                 // Display the details (which is a key value pair)
                 foreach(var detail in resultsOfAPICall.Details)
                 {
-                    Console.WriteLine("Key = " + detail.Key);
-                    Console.WriteLine("Value = " + detail.Value);
+                    Console.WriteLine($"{detail.Key} = {detail.Value}");
                 }
             }
 
@@ -124,6 +122,23 @@ namespace MyApp
             return productTypes;
         }
 
+    }
+
+    class Program
+    {
+        static async Task Main(string[] args)
+        {
+            var apiClient = new APIClient();
+
+            var productTypes = await apiClient.GetProductTypes();
+            if (productTypes != null)
+            {
+                foreach(var productType in productTypes)
+                {
+                    Console.WriteLine(productType.ProductType);
+                }
+            }
+        }
     }
 }
 ```

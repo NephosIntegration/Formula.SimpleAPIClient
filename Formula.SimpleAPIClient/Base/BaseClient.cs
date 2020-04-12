@@ -43,17 +43,24 @@ namespace Formula.SimpleAPIClient
 
             if (output.IsSuccessful)
             {
-                var token = output.GetDataAs<TToken>();
-                
-                var apiClient = this.PrepareAPIClient(token);
-
-                var response = await (cancellationToken == null ? apiClient.GetAsync(requestUri) : apiClient.GetAsync(requestUri, cancellationToken.Value));
-
-                output.SetData(response);
-
-                if (response.IsSuccessStatusCode == false)
+                try
                 {
-                    output = this.HandleNonSuccessfulResponse(response, output);
+                    var token = output.GetDataAs<TToken>();
+                    
+                    var apiClient = this.PrepareAPIClient(token);
+
+                    var response = await (cancellationToken == null ? apiClient.GetAsync(requestUri) : apiClient.GetAsync(requestUri, cancellationToken.Value));
+
+                    output.SetData(response);
+
+                    if (response.IsSuccessStatusCode == false)
+                    {
+                        output = this.HandleNonSuccessfulResponse(response, output);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    output.RecordFailure(ex.Message, ex.Source);
                 }
             }
 

@@ -1,6 +1,6 @@
 using System;
 
-namespace Formula.SimpleAPIClient
+namespace Formula.SimpleAPIClient.Tests
 {
     public class SimpleAPIClientConfigModel
     {

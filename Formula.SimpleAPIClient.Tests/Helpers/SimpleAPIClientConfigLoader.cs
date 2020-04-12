@@ -3,7 +3,7 @@ using System.IO;
 using System.Text.Json;
 using Formula.SimpleCore;
 
-namespace Formula.SimpleAPIClient
+namespace Formula.SimpleAPIClient.Tests
 {
     public class SimpleAPIClientConfigLoader : ConfigLoader<SimpleAPIClientConfigModel>
     {
