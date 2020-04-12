@@ -94,15 +94,22 @@ namespace Formula.SimpleAPIClient
             return output;
         }
 
-        public virtual async Task<StatusBuilder> GetAsTypeAsync<TType>(string requestUri, CancellationToken? cancellationToken = null)
+        public virtual async Task<TypedStatusBuilder<TType>> GetAsTypeAsync<TType>(string requestUri, CancellationToken? cancellationToken = null)
         {
-            var output = await this.GetAsJObjectAsync(requestUri, cancellationToken);
+            var output = new TypedStatusBuilder<TType>();
+            var results = await this.GetAsJObjectAsync(requestUri, cancellationToken);
 
-            if (output.IsSuccessful)
+            if (results.IsSuccessful)
             {
-                var response = output.GetDataAs<JObject>();
-                var content = response.ToObject<TType>();
+                var data = results.GetDataAs<JObject>();
+                var content = data.ToObject<TType>();
                 output.SetData(content);
+            }
+            else
+            {
+                output.Details = results.Details;
+                output.Message = results.Message;
+                output.Fail();
             }
 
             return output;
