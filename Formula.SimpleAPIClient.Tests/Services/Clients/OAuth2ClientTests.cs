@@ -21,7 +21,7 @@ namespace Formula.SimpleAPIClient.Tests
         {
             var response = await this.client.GetAsStringAsync(this.config.OAuth2Config.AuthServerAddress + "/Manage");
             Assert.True(response.IsSuccessful);
-            var pageContent = response.GetDataAs<String>();
+            var pageContent = response.Data;
             Assert.NotNull(pageContent);
             Assert.IsType<String>(pageContent);
         }

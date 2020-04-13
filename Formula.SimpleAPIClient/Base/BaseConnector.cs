@@ -10,8 +10,8 @@ namespace Formula.SimpleAPIClient
     public abstract class BaseConnector<TTokenModel> : IConnector
     where TTokenModel : BaseToken
     {
-        protected abstract Task<StatusBuilder> EstablishTokenAsync();
-        protected abstract StatusBuilder ParseToken(TokenResponse tokenResponse);
+        protected abstract Task<TypedStatusBuilder<TokenResponse>> EstablishTokenAsync();
+        protected abstract TypedStatusBuilder<TTokenModel> ParseToken(TokenResponse tokenResponse);
 
         protected long _tokenExpirationThresholdSeconds = 0;
         public BaseConnector(long tokenExpirationThresholdSeconds = 0)
@@ -51,7 +51,7 @@ namespace Formula.SimpleAPIClient
                         if (result.IsSuccessful)
                         {
                             this._currentTokenParsed = true;
-                            this._currentToken = result.GetDataAs<TTokenModel>();
+                            this._currentToken = result.Data;
                         }
                     }
                 }
@@ -90,51 +90,55 @@ namespace Formula.SimpleAPIClient
             return this;
         }
 
-        public virtual async Task<StatusBuilder> GetValidTokenAsync()
+        public virtual async Task<TypedStatusBuilder<TTokenModel>> GetValidTokenAsync()
         {
-            var output = new StatusBuilder();
+            var status = new TypedStatusBuilder<TTokenModel>();
+
             var tokenAttempted = false;  // We only want to attempt to fetch the token 1 time
 
-            // Make sure we have a token response
+            // If we don't have a token response yet
             if (this.CurrentTokenResponse == null)
             {
+                // Establish one, and preserve the status (don't preserve the output data)
                 tokenAttempted = true;
-                output = await this.EstablishTokenAsync();
+                var results = await this.EstablishTokenAsync();
+                status = results.ConvertWithDataAs<TTokenModel>(null);
             }
 
             // Ensure the token response is valid
-            if (output.IsSuccessful)
+            if (status.IsSuccessful)
             {
                 if (this.CurrentTokenResponse == null)
                 {
-                    output.RecordFailure("This implementation failed to set the token response.", "GetValidTokenResponseAsync");
+                    status.RecordFailure("This implementation failed to set the token response.", "GetValidTokenResponseAsync");
                 }
                 else
                 {
                     if (this.CurrentTokenResponse.IsError)
                     {
-                        output.RecordFailure(this.CurrentTokenResponse.Error, "GetValidTokenResponseAsync");
+                        status.RecordFailure(this.CurrentTokenResponse.Error, "GetValidTokenResponseAsync");
                     }
                 }
             }
 
             // If we are still successful, and didn't just fetch the token
-            if (output.IsSuccessful && tokenAttempted == false)
+            if (status.IsSuccessful && tokenAttempted == false)
             {
                 // Refetch if it is expired
                 if (this.IsExpired())
                 {
                     tokenAttempted = true;
-                    output = await this.EstablishTokenAsync();
+                    var results = await this.EstablishTokenAsync();
+                    status = results.ConvertWithDataAs<TTokenModel>(null);
                 }
             }
 
-            if (output.IsSuccessful)
+            if (status.IsSuccessful)
             {
-                output.SetData(this.CurrentToken);
+                status.SetData(this.CurrentToken);
             }
 
-            return output;
+            return status;
         }
     }
 }

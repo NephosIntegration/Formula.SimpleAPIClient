@@ -19,9 +19,9 @@ namespace Formula.SimpleAPIClient
         }
 
         private DiscoveryDocumentResponse discoveryDoc = null;
-        public async Task<StatusBuilder> GetDiscoveryDocumentAsync()
+        public async Task<TypedStatusBuilder<DiscoveryDocumentResponse>> GetDiscoveryDocumentAsync()
         {
-            var output = new StatusBuilder();
+            var output = new TypedStatusBuilder<DiscoveryDocumentResponse>();
 
             if (this.discoveryDoc == null)
             {
@@ -46,13 +46,14 @@ namespace Formula.SimpleAPIClient
             return output;
         }
 
-        protected override async Task<StatusBuilder> EstablishTokenAsync()
+        protected override async Task<TypedStatusBuilder<TokenResponse>> EstablishTokenAsync()
         {
-            var output = await this.GetDiscoveryDocumentAsync();
+            var status = await this.GetDiscoveryDocumentAsync();
+            TokenResponse output = null;
 
-            if (output.IsSuccessful)
+            if (status.IsSuccessful)
             {
-                var discoveryDoc = output.GetDataAs<DiscoveryDocumentResponse>();
+                var discoveryDoc = status.Data;
 
                 var httpClient = new HttpClient();
 
@@ -67,20 +68,21 @@ namespace Formula.SimpleAPIClient
                 
                 if (this.CurrentTokenResponse.IsError)
                 {
-                    output.RecordFailure(this.CurrentTokenResponse.Error, "GetClientCredentialsAsync");
+                    status.RecordFailure(this.CurrentTokenResponse.Error, "GetClientCredentialsAsync");
                 }
                 else
                 {
-                    output.SetData(this.CurrentTokenResponse);
+                    output = this.CurrentTokenResponse;
+                    
                 }
             }
 
-            return output;
+            return status.ConvertWithDataAs<TokenResponse>(output);
         }
 
-        protected override StatusBuilder ParseToken(TokenResponse tokenResponse)
+        protected override TypedStatusBuilder<OAuth2TokenModel> ParseToken(TokenResponse tokenResponse)
         {
-            var output = new StatusBuilder();
+            var output = new TypedStatusBuilder<OAuth2TokenModel>();
 
             var tokenModel = tokenResponse.Json.ToObject<OAuth2TokenModel>();
             tokenModel.Token = tokenModel.access_token;

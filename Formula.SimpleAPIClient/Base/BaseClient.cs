@@ -28,98 +28,86 @@ namespace Formula.SimpleAPIClient
         /// <param name="responseMessage">The raw response message returned from the http client</param>
         /// <param name="builder">The current StatusBuilder object to append the failure details to.</param>
         /// <returns>The StatusBuilder after being enriched with failure details</returns>
-        public virtual StatusBuilder HandleNonSuccessfulResponse(HttpResponseMessage responseMessage, StatusBuilder builder)
+        public virtual TypedStatusBuilder<HttpResponseMessage> HandleNonSuccessfulResponse(HttpResponseMessage responseMessage, TypedStatusBuilder<HttpResponseMessage> currentBuilder)
         {
             if (responseMessage.IsSuccessStatusCode == false)
             {
-                builder.RecordFailure(responseMessage.StatusCode.ToString());
+                currentBuilder.RecordFailure(responseMessage.StatusCode.ToString());
             }
-            return builder;
+            return currentBuilder;
         }
 
-        public virtual async Task<StatusBuilder> GetAsync(string requestUri, CancellationToken? cancellationToken = null)
+        public virtual async Task<TypedStatusBuilder<HttpResponseMessage>> GetAsync(string requestUri, CancellationToken? cancellationToken = null)
         {
-            var output = await this.Connector.GetValidTokenAsync();
+            HttpResponseMessage output = null;
+            var tokenStatus = await this.Connector.GetValidTokenAsync();
+            var status = tokenStatus.ConvertWithDataAs<HttpResponseMessage>(output);
 
-            if (output.IsSuccessful)
+            if (tokenStatus.IsSuccessful)
             {
                 try
                 {
-                    var token = output.GetDataAs<TToken>();
-                    
-                    var apiClient = this.PrepareAPIClient(token);
+                    var apiClient = this.PrepareAPIClient(tokenStatus.Data);
 
-                    var response = await (cancellationToken == null ? apiClient.GetAsync(requestUri) : apiClient.GetAsync(requestUri, cancellationToken.Value));
+                    output = await (cancellationToken == null ? apiClient.GetAsync(requestUri) : apiClient.GetAsync(requestUri, cancellationToken.Value));
 
-                    output.SetData(response);
-
-                    if (response.IsSuccessStatusCode == false)
+                    if (output.IsSuccessStatusCode == false)
                     {
-                        output = this.HandleNonSuccessfulResponse(response, output);
+                        status = this.HandleNonSuccessfulResponse(output, status);
                     }
                 }
                 catch (Exception ex)
                 {
-                    output.RecordFailure(ex.Message, ex.Source);
+                    status.RecordFailure(ex.Message, ex.Source);
                 }
             }
 
-            return output;
+            return status.ConvertWithDataAs(output);
         }
 
-        public virtual async Task<StatusBuilder> GetAsStringAsync(string requestUri, CancellationToken? cancellationToken = null)
+        public virtual async Task<TypedStatusBuilder<String>> GetAsStringAsync(string requestUri, CancellationToken? cancellationToken = null)
         {
-            var output = await this.GetAsync(requestUri, cancellationToken);
+            var status = await this.GetAsync(requestUri, cancellationToken);
+            String output = null;
 
-            if (output.IsSuccessful)
+            if (status.IsSuccessful)
             {
-                var response = output.GetDataAs<HttpResponseMessage>();
-                if (response.Content != null)
+                if (status.Data.Content != null)
                 {
-                    var content = await response.Content.ReadAsStringAsync();
-                    output.SetData(content);
+                    output = await status.Data.Content.ReadAsStringAsync();
                 }
             }
 
-            return output;
+            return status.ConvertWithDataAs(output);
         }
 
-        public virtual async Task<StatusBuilder> GetAsJObjectAsync(string requestUri, CancellationToken? cancellationToken = null)
+        public virtual async Task<TypedStatusBuilder<JObject>> GetAsJObjectAsync(string requestUri, CancellationToken? cancellationToken = null)
         {
-            var output = await this.GetAsStringAsync(requestUri, cancellationToken);
+            var status = await this.GetAsStringAsync(requestUri, cancellationToken);
+            JObject output = null;
 
-            if (output.IsSuccessful)
+            if (status.IsSuccessful)
             {
-                var response = output.GetDataAs<String>();
-                if (String.IsNullOrWhiteSpace(response) == false)
+                if (String.IsNullOrWhiteSpace(status.Data) == false)
                 {
-                    var content = JObject.Parse(response);
-                    output.SetData(content);
+                    output = JObject.Parse(status.Data);
                 }
             }
 
-            return output;
+            return status.ConvertWithDataAs(output);
         }
 
         public virtual async Task<TypedStatusBuilder<TType>> GetAsTypeAsync<TType>(string requestUri, CancellationToken? cancellationToken = null)
         {
-            var output = new TypedStatusBuilder<TType>();
-            var results = await this.GetAsJObjectAsync(requestUri, cancellationToken);
+            var status = await this.GetAsJObjectAsync(requestUri, cancellationToken);
+            TType output = default(TType);
 
-            if (results.IsSuccessful)
+            if (status.IsSuccessful)
             {
-                var data = results.GetDataAs<JObject>();
-                var content = data.ToObject<TType>();
-                output.SetData(content);
-            }
-            else
-            {
-                output.Details = results.Details;
-                output.Message = results.Message;
-                output.Fail();
+                output = status.Data.ToObject<TType>();
             }
 
-            return output;
+            return status.ConvertWithDataAs(output);
         }
     }
 }

@@ -5,8 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Formula.SimpleCore" Version="1.0.*" />
+    <!-- PackageReference Include="Formula.SimpleCore" Version="1.0.*" /-->
     <PackageReference Include="IdentityModel" Version="4.2.*" />    
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Formula.SimpleCore\Formula.SimpleCore.csproj" />
   </ItemGroup>
 
 </Project>
