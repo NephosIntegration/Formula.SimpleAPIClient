@@ -32,8 +32,8 @@ namespace Formula.SimpleAPIClient.Examples.ConsoleApp
         {
             var config = new OAuth2ConfigModel() {
                 AuthServerAddress = "http://localhost:5000",
-                ClientId = "troody-jobs",
-                ClientSecret = "8fac18f9-fd33-642c-9507-3f6d7d43e28f",
+                ClientId = "my-client-id",
+                ClientSecret = "my-client-secret",
                 Scope = null,
                 TokenExpirationThresholdSeconds = 60 // Fetch new token if we are within 60 seconds of expiration
             };
