@@ -2,9 +2,11 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $DIR/..
 
+cd ./Formula.SimpleAPIClient/
 projectFile=$(ls *.csproj)
 projectName=${projectFile::-7}
 version=$(sed -ne '/Version/{s/.*<Version>\(.*\)<\/Version>.*/\1/p;q;}' <<< cat "$projectFile")
+cd $DIR/..
 
 function listCommands() {
     echo ""
@@ -41,10 +43,10 @@ function getNugetAPIKey() {
 function nuget() {
     getNugetAPIKey
     cleanBuild
-    cp README.md README.txt
+    cp README.md ./Formula.SimpleAPIClient/README.txt
     dotnet pack
-    rm README.txt
-    dotnet nuget push ./bin/Debug/$projectName.$version.nupkg -k $apikey -s https://api.nuget.org/v3/index.json
+    rm ./Formula.SimpleAPIClient/README.txt
+    dotnet nuget push ./Formula.SimpleAPIClient/bin/Debug/$projectName.$version.nupkg -k $apikey -s https://api.nuget.org/v3/index.json
 }
 
 function help() {
