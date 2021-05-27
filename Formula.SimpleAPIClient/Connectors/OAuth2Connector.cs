@@ -19,9 +19,9 @@ namespace Formula.SimpleAPIClient
         }
 
         private DiscoveryDocumentResponse discoveryDoc = null;
-        public async Task<TypedStatusBuilder<DiscoveryDocumentResponse>> GetDiscoveryDocumentAsync()
+        public async Task<Status<DiscoveryDocumentResponse>> GetDiscoveryDocumentAsync()
         {
-            var output = new TypedStatusBuilder<DiscoveryDocumentResponse>();
+            var output = new Status<DiscoveryDocumentResponse>();
 
             if (this.discoveryDoc == null)
             {
@@ -46,7 +46,7 @@ namespace Formula.SimpleAPIClient
             return output;
         }
 
-        protected override async Task<TypedStatusBuilder<TokenResponse>> EstablishTokenAsync()
+        protected override async Task<Status<TokenResponse>> EstablishTokenAsync()
         {
             var status = await this.GetDiscoveryDocumentAsync();
             TokenResponse output = null;
@@ -80,9 +80,9 @@ namespace Formula.SimpleAPIClient
             return status.ConvertWithDataAs<TokenResponse>(output);
         }
 
-        protected override TypedStatusBuilder<OAuth2TokenModel> ParseToken(TokenResponse tokenResponse)
+        protected override Status<OAuth2TokenModel> ParseToken(TokenResponse tokenResponse)
         {
-            var output = new TypedStatusBuilder<OAuth2TokenModel>();
+            var output = new Status<OAuth2TokenModel>();
 
             var tokenModel = tokenResponse.Json.ToObject<OAuth2TokenModel>();
             tokenModel.Token = tokenModel.access_token;

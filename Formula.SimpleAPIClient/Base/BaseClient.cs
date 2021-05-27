@@ -35,9 +35,9 @@ namespace Formula.SimpleAPIClient
         /// Intended to be a overriden by inherited objects that know more about the expected results.
         /// </summary>
         /// <param name="responseMessage">The raw response message returned from the http client</param>
-        /// <param name="builder">The current StatusBuilder object to append the failure details to.</param>
-        /// <returns>The StatusBuilder after being enriched with failure details</returns>
-        public virtual TypedStatusBuilder<HttpResponseMessage> HandleNonSuccessfulResponse(HttpResponseMessage responseMessage, TypedStatusBuilder<HttpResponseMessage> currentBuilder)
+        /// <param name="builder">The current Status object to append the failure details to.</param>
+        /// <returns>The Status after being enriched with failure details</returns>
+        public virtual Status<HttpResponseMessage> HandleNonSuccessfulResponse(HttpResponseMessage responseMessage, Status<HttpResponseMessage> currentBuilder)
         {
             if (responseMessage.IsSuccessStatusCode == false)
             {
@@ -46,7 +46,7 @@ namespace Formula.SimpleAPIClient
             return currentBuilder;
         }
 
-        public virtual async Task<TypedStatusBuilder<HttpResponseMessage>> SendAsync(string requestUri, Verb verb = Verb.GET, HttpContent content = null, CancellationToken? cancellationToken = null)
+        public virtual async Task<Status<HttpResponseMessage>> SendAsync(string requestUri, Verb verb = Verb.GET, HttpContent content = null, CancellationToken? cancellationToken = null)
         {
             HttpResponseMessage output = null;
             var tokenStatus = await this.Connector.GetValidTokenAsync();
@@ -93,7 +93,7 @@ namespace Formula.SimpleAPIClient
             return status.ConvertWithDataAs(output);
         }
 
-        public virtual async Task<TypedStatusBuilder<String>> SendAsStringAsync(string requestUri, Verb verb = Verb.GET, HttpContent content = null, CancellationToken? cancellationToken = null)
+        public virtual async Task<Status<String>> SendAsStringAsync(string requestUri, Verb verb = Verb.GET, HttpContent content = null, CancellationToken? cancellationToken = null)
         {
             var status = await this.SendAsync(requestUri, verb, content, cancellationToken);
             String output = null;
@@ -109,7 +109,7 @@ namespace Formula.SimpleAPIClient
             return status.ConvertWithDataAs(output);
         }
 
-        public virtual async Task<TypedStatusBuilder<JObject>> SendAsJObjectAsync(string requestUri, Verb verb = Verb.GET, HttpContent content = null, CancellationToken? cancellationToken = null)
+        public virtual async Task<Status<JObject>> SendAsJObjectAsync(string requestUri, Verb verb = Verb.GET, HttpContent content = null, CancellationToken? cancellationToken = null)
         {
             var status = await this.SendAsStringAsync(requestUri, verb, content, cancellationToken);
             JObject output = null;
@@ -125,7 +125,7 @@ namespace Formula.SimpleAPIClient
             return status.ConvertWithDataAs(output);
         }
 
-        public virtual async Task<TypedStatusBuilder<TType>> SendAsTypeAsync<TType>(string requestUri, Verb verb = Verb.GET, HttpContent content = null, CancellationToken? cancellationToken = null)
+        public virtual async Task<Status<TType>> SendAsTypeAsync<TType>(string requestUri, Verb verb = Verb.GET, HttpContent content = null, CancellationToken? cancellationToken = null)
         {
             var status = await this.SendAsJObjectAsync(requestUri, verb, content, cancellationToken);
             TType output = default(TType);
@@ -142,22 +142,22 @@ namespace Formula.SimpleAPIClient
         /*******\
         GET
         \*******/
-        public virtual Task<TypedStatusBuilder<HttpResponseMessage>> GetAsync(string requestUri, CancellationToken? cancellationToken = null)
+        public virtual Task<Status<HttpResponseMessage>> GetAsync(string requestUri, CancellationToken? cancellationToken = null)
         {
             return this.SendAsync(requestUri, Verb.GET, null, cancellationToken);
         }
 
-        public virtual Task<TypedStatusBuilder<String>> GetAsStringAsync(string requestUri, CancellationToken? cancellationToken = null)
+        public virtual Task<Status<String>> GetAsStringAsync(string requestUri, CancellationToken? cancellationToken = null)
         {
             return this.SendAsStringAsync(requestUri, Verb.GET, null, cancellationToken);
         }
 
-        public virtual Task<TypedStatusBuilder<JObject>> GetAsJObjectAsync(string requestUri, CancellationToken? cancellationToken = null)
+        public virtual Task<Status<JObject>> GetAsJObjectAsync(string requestUri, CancellationToken? cancellationToken = null)
         {
             return this.SendAsJObjectAsync(requestUri, Verb.GET, null, cancellationToken);
         }
 
-        public virtual Task<TypedStatusBuilder<TType>> GetAsTypeAsync<TType>(string requestUri, CancellationToken? cancellationToken = null)
+        public virtual Task<Status<TType>> GetAsTypeAsync<TType>(string requestUri, CancellationToken? cancellationToken = null)
         {
             return this.SendAsTypeAsync<TType>(requestUri, Verb.GET, null, cancellationToken);
         }
@@ -166,22 +166,22 @@ namespace Formula.SimpleAPIClient
         /*******\
         DELETE
         \*******/
-        public virtual Task<TypedStatusBuilder<HttpResponseMessage>> DeleteAsync(string requestUri, CancellationToken? cancellationToken = null)
+        public virtual Task<Status<HttpResponseMessage>> DeleteAsync(string requestUri, CancellationToken? cancellationToken = null)
         {
             return this.SendAsync(requestUri, Verb.DELETE, null, cancellationToken);
         }
 
-        public virtual Task<TypedStatusBuilder<String>> DeleteAsStringAsync(string requestUri, CancellationToken? cancellationToken = null)
+        public virtual Task<Status<String>> DeleteAsStringAsync(string requestUri, CancellationToken? cancellationToken = null)
         {
             return this.SendAsStringAsync(requestUri, Verb.DELETE, null, cancellationToken);
         }
 
-        public virtual Task<TypedStatusBuilder<JObject>> DeleteAsJObjectAsync(string requestUri, CancellationToken? cancellationToken = null)
+        public virtual Task<Status<JObject>> DeleteAsJObjectAsync(string requestUri, CancellationToken? cancellationToken = null)
         {
             return this.SendAsJObjectAsync(requestUri, Verb.DELETE, null, cancellationToken);
         }
 
-        public virtual Task<TypedStatusBuilder<TType>> DeleteAsTypeAsync<TType>(string requestUri, CancellationToken? cancellationToken = null)
+        public virtual Task<Status<TType>> DeleteAsTypeAsync<TType>(string requestUri, CancellationToken? cancellationToken = null)
         {
             return this.SendAsTypeAsync<TType>(requestUri, Verb.DELETE, null, cancellationToken);
         }
@@ -190,22 +190,22 @@ namespace Formula.SimpleAPIClient
         /*******\
         POST
         \*******/
-        public virtual Task<TypedStatusBuilder<HttpResponseMessage>> PostAsync(string requestUri, HttpContent content = null, CancellationToken? cancellationToken = null)
+        public virtual Task<Status<HttpResponseMessage>> PostAsync(string requestUri, HttpContent content = null, CancellationToken? cancellationToken = null)
         {
             return this.SendAsync(requestUri, Verb.POST, content, cancellationToken);
         }
 
-        public virtual Task<TypedStatusBuilder<String>> PostAsStringAsync(string requestUri, HttpContent content = null, CancellationToken? cancellationToken = null)
+        public virtual Task<Status<String>> PostAsStringAsync(string requestUri, HttpContent content = null, CancellationToken? cancellationToken = null)
         {
             return this.SendAsStringAsync(requestUri, Verb.POST, content, cancellationToken);
         }
 
-        public virtual Task<TypedStatusBuilder<JObject>> PostAsJObjectAsync(string requestUri, HttpContent content = null, CancellationToken? cancellationToken = null)
+        public virtual Task<Status<JObject>> PostAsJObjectAsync(string requestUri, HttpContent content = null, CancellationToken? cancellationToken = null)
         {
             return this.SendAsJObjectAsync(requestUri, Verb.POST, content, cancellationToken);
         }
 
-        public virtual Task<TypedStatusBuilder<TType>> PostAsTypeAsync<TType>(string requestUri, HttpContent content = null, CancellationToken? cancellationToken = null)
+        public virtual Task<Status<TType>> PostAsTypeAsync<TType>(string requestUri, HttpContent content = null, CancellationToken? cancellationToken = null)
         {
             return this.SendAsTypeAsync<TType>(requestUri, Verb.POST, content, cancellationToken);
         }
@@ -214,22 +214,22 @@ namespace Formula.SimpleAPIClient
         /*******\
         PUT
         \*******/
-        public virtual Task<TypedStatusBuilder<HttpResponseMessage>> PutAsync(string requestUri, HttpContent content = null, CancellationToken? cancellationToken = null)
+        public virtual Task<Status<HttpResponseMessage>> PutAsync(string requestUri, HttpContent content = null, CancellationToken? cancellationToken = null)
         {
             return this.SendAsync(requestUri, Verb.PUT, content, cancellationToken);
         }
 
-        public virtual Task<TypedStatusBuilder<String>> PutAsStringAsync(string requestUri, HttpContent content = null, CancellationToken? cancellationToken = null)
+        public virtual Task<Status<String>> PutAsStringAsync(string requestUri, HttpContent content = null, CancellationToken? cancellationToken = null)
         {
             return this.SendAsStringAsync(requestUri, Verb.PUT, content, cancellationToken);
         }
 
-        public virtual Task<TypedStatusBuilder<JObject>> PutAsJObjectAsync(string requestUri, HttpContent content = null, CancellationToken? cancellationToken = null)
+        public virtual Task<Status<JObject>> PutAsJObjectAsync(string requestUri, HttpContent content = null, CancellationToken? cancellationToken = null)
         {
             return this.SendAsJObjectAsync(requestUri, Verb.PUT, content, cancellationToken);
         }
 
-        public virtual Task<TypedStatusBuilder<TType>> PutAsTypeAsync<TType>(string requestUri, HttpContent content = null, CancellationToken? cancellationToken = null)
+        public virtual Task<Status<TType>> PutAsTypeAsync<TType>(string requestUri, HttpContent content = null, CancellationToken? cancellationToken = null)
         {
             return this.SendAsTypeAsync<TType>(requestUri, Verb.PUT, content, cancellationToken);
         }
@@ -238,22 +238,22 @@ namespace Formula.SimpleAPIClient
         /*******\
         PATCH
         \*******/
-        public virtual Task<TypedStatusBuilder<HttpResponseMessage>> PatchAsync(string requestUri, HttpContent content = null, CancellationToken? cancellationToken = null)
+        public virtual Task<Status<HttpResponseMessage>> PatchAsync(string requestUri, HttpContent content = null, CancellationToken? cancellationToken = null)
         {
             return this.SendAsync(requestUri, Verb.PATCH, content, cancellationToken);
         }
 
-        public virtual Task<TypedStatusBuilder<String>> PatchAsStringAsync(string requestUri, HttpContent content = null, CancellationToken? cancellationToken = null)
+        public virtual Task<Status<String>> PatchAsStringAsync(string requestUri, HttpContent content = null, CancellationToken? cancellationToken = null)
         {
             return this.SendAsStringAsync(requestUri, Verb.PATCH, content, cancellationToken);
         }
 
-        public virtual Task<TypedStatusBuilder<JObject>> PatchAsJObjectAsync(string requestUri, HttpContent content = null, CancellationToken? cancellationToken = null)
+        public virtual Task<Status<JObject>> PatchAsJObjectAsync(string requestUri, HttpContent content = null, CancellationToken? cancellationToken = null)
         {
             return this.SendAsJObjectAsync(requestUri, Verb.PATCH, content, cancellationToken);
         }
 
-        public virtual Task<TypedStatusBuilder<TType>> PatchAsTypeAsync<TType>(string requestUri, HttpContent content = null, CancellationToken? cancellationToken = null)
+        public virtual Task<Status<TType>> PatchAsTypeAsync<TType>(string requestUri, HttpContent content = null, CancellationToken? cancellationToken = null)
         {
             return this.SendAsTypeAsync<TType>(requestUri, Verb.PATCH, content, cancellationToken);
         }

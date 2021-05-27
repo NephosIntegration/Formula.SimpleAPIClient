@@ -10,8 +10,8 @@ namespace Formula.SimpleAPIClient
     public abstract class BaseConnector<TTokenModel> : IConnector
     where TTokenModel : BaseToken
     {
-        protected abstract Task<TypedStatusBuilder<TokenResponse>> EstablishTokenAsync();
-        protected abstract TypedStatusBuilder<TTokenModel> ParseToken(TokenResponse tokenResponse);
+        protected abstract Task<Status<TokenResponse>> EstablishTokenAsync();
+        protected abstract Status<TTokenModel> ParseToken(TokenResponse tokenResponse);
 
         protected long _tokenExpirationThresholdSeconds = 0;
         public BaseConnector(long tokenExpirationThresholdSeconds = 0)
@@ -90,9 +90,9 @@ namespace Formula.SimpleAPIClient
             return this;
         }
 
-        public virtual async Task<TypedStatusBuilder<TTokenModel>> GetValidTokenAsync()
+        public virtual async Task<Status<TTokenModel>> GetValidTokenAsync()
         {
-            var status = new TypedStatusBuilder<TTokenModel>();
+            var status = new Status<TTokenModel>();
 
             var tokenAttempted = false;  // We only want to attempt to fetch the token 1 time
 
