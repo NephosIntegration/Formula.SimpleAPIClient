@@ -84,7 +84,7 @@ namespace Formula.SimpleAPIClient
         {
             var output = new Status<OAuth2TokenModel>();
 
-            var tokenModel = tokenResponse.Json.ToObject<OAuth2TokenModel>();
+            var tokenModel = tokenResponse.Json.Deserialize<OAuth2TokenModel>();
             tokenModel.Token = tokenModel.access_token;
             tokenModel.ExpiresAt = DateTime.Now.AddSeconds(tokenModel.expires_in);
             
