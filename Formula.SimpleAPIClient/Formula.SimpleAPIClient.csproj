@@ -3,7 +3,7 @@
   <PropertyGroup>
     <AssemblyName>Formula.SimpleAPIClient</AssemblyName>
     <PackageId>Formula.SimpleAPIClient</PackageId>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
     <PackageTags>utilities</PackageTags>
     <Title>Formula Simple API Client</Title>
     <Description>Easy RESTful API Client for .Net</Description>
