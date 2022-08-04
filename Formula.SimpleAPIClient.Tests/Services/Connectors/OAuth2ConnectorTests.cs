@@ -1,8 +1,6 @@
 using System;
 using Xunit;
 using System.Threading.Tasks;
-using Formula.SimpleAPIClient;
-using IdentityModel.Client;
 
 namespace Formula.SimpleAPIClient.Tests
 {
