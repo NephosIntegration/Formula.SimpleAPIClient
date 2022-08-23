@@ -3,12 +3,11 @@
   <PropertyGroup>
     <AssemblyName>Formula.SimpleAPIClient</AssemblyName>
     <PackageId>Formula.SimpleAPIClient</PackageId>
-    <Version>1.1.1</Version>
+    <Version>1.6.0</Version>
     <PackageTags>utilities</PackageTags>
     <Title>Formula Simple API Client</Title>
     <Description>Easy RESTful API Client for .Net</Description>
-    <Authors>Joshua Williams</Authors>  
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Authors>Joshua Williams</Authors>
     <RepositoryUrl>https://github.com/NephosIntegration/Formula.SimpleAPIClient</RepositoryUrl>
     <PackageProjectUrl>https://github.com/NephosIntegration/Formula.SimpleAPIClient</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -22,11 +21,11 @@
   </ItemGroup>  
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Formula.SimpleCore" Version="1.1.*" />
+    <PackageReference Include="Formula.SimpleCore" Version="1.6.*" />
     <PackageReference Include="IdentityModel" Version="6.0.*" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />    
   </ItemGroup>
