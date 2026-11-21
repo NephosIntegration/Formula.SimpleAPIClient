@@ -3,7 +3,7 @@
   <PropertyGroup>
     <AssemblyName>Formula.SimpleAPIClient</AssemblyName>
     <PackageId>Formula.SimpleAPIClient</PackageId>
-    <Version>1.8.0</Version>
+    <Version>1.10.0</Version>
     <PackageTags>utilities</PackageTags>
     <Title>Formula Simple API Client</Title>
     <Description>Easy RESTful API Client for .Net</Description>
@@ -22,13 +22,13 @@
   </ItemGroup>  
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Formula.SimpleCore" Version="1.8.*" />
-    <PackageReference Include="IdentityModel" Version="6.2.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />    
+    <PackageReference Include="Formula.SimpleCore" Version="1.10.*" />
+    <PackageReference Include="Duende.IdentityModel" Version="8.1.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
 
 </Project>

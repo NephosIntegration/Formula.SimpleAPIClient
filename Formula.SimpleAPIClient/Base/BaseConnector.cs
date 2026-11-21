@@ -3,7 +3,7 @@ using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Formula.SimpleCore;
-using IdentityModel.Client;
+using Duende.IdentityModel.Client;
 
 namespace Formula.SimpleAPIClient
 {
