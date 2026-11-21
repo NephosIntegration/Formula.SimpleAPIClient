@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 
 namespace Formula.SimpleAPIClient.Tests
 {
+    [Trait("Category", "Integration")]
     public class OAuth2ConnectorTests
     {
         private OAuth2Connector connector = null;
@@ -14,7 +15,7 @@ namespace Formula.SimpleAPIClient.Tests
             this.connector = new OAuth2Connector(config.OAuth2Config);
         }
 
-        [Fact]
+        [IntegrationFact]
         public async Task CanGetValidToken()
         {
             var results = await this.connector.Reset().GetValidTokenAsync();
@@ -28,7 +29,7 @@ namespace Formula.SimpleAPIClient.Tests
             Assert.False(this.connector.IsExpired(), "Token shouldn't be expired yet, as it's brand new!");
         }
 
-        [Fact]
+        [IntegrationFact]
         public async Task CanRenewAnExpiredToken()
         {
             var results = await this.connector.Reset().GetValidTokenAsync();
