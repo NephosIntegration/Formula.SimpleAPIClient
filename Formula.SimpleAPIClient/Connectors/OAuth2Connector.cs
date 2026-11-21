@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Formula.SimpleCore;
-using IdentityModel.Client;
+using Duende.IdentityModel.Client;
 
 
 namespace Formula.SimpleAPIClient
@@ -84,7 +84,7 @@ namespace Formula.SimpleAPIClient
         {
             var output = new Status<OAuth2TokenModel>();
 
-            var tokenModel = tokenResponse.Json.Deserialize<OAuth2TokenModel>();
+            var tokenModel = tokenResponse.Json.Value.Deserialize<OAuth2TokenModel>();
             tokenModel.Token = tokenModel.access_token;
             tokenModel.ExpiresAt = DateTime.Now.AddSeconds(tokenModel.expires_in);
             

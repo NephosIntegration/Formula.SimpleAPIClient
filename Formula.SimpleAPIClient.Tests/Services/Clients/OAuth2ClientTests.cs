@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace Formula.SimpleAPIClient.Tests
 {
+    [Trait("Category", "Integration")]
     public class OAuth2ClientTests
     {
         private OAuth2Client client = null;
@@ -16,7 +17,7 @@ namespace Formula.SimpleAPIClient.Tests
             this.client = new OAuth2Client(config.OAuth2Config);
         }
 
-        [Fact]
+        [IntegrationFact]
         public async Task CanReceiveContentAsync()
         {
             var response = await this.client.GetAsStringAsync(this.config.OAuth2Config.AuthServerAddress + "/Manage");

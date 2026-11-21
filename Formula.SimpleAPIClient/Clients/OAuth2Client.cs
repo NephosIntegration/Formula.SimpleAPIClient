@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using System.Net.Http;
-using IdentityModel.Client;
+using Duende.IdentityModel.Client;
 using System.Text.Json;
 using Formula.SimpleCore;
 

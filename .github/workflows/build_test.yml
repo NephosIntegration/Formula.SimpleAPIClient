@@ -14,12 +14,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v6
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 10.0.x
 
     - name: Restore dependencies
       run: dotnet restore
@@ -28,7 +28,7 @@ jobs:
       run: dotnet build --no-restore --configuration Release
 
     - name: Test
-      run: dotnet test ./Formula.SimpleAPIClient.Tests/Formula.SimpleAPIClient.Tests.csproj --configuration Release --no-build --results-directory ./test-results --logger "trx;LogFileName=test_results.trx" --verbosity normal --collect:"XPlat Code Coverage"
+      run: dotnet test ./Formula.SimpleAPIClient.Tests/Formula.SimpleAPIClient.Tests.csproj --configuration Release --no-build --filter "Category!=Integration" --results-directory ./test-results --logger "trx;LogFileName=test_results.trx" --verbosity normal --collect:"XPlat Code Coverage"
 
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action@v2
@@ -51,7 +51,7 @@ jobs:
         thresholds: '50 75'
 
     - name: Upload Test Results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: test-results
         path: ./test-results
